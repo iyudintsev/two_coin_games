@@ -1,29 +1,20 @@
 import argparse
-from strategy import Strategy, strategy_factory
+from strategy import State, Strategy, strategy_factory
 
 
 class Actor:
     def __init__(self, strategy: Strategy):
         self.strategy = strategy
-        self.n = 0
-        self.m = 0
-        self.reward = 0
+        self.state = State()
 
     def get_reward(self):
-        return self.reward
+        return self.state.get_reward()
 
     def generate(self):
-        return self.strategy(self.n, self.m)
+        return self.strategy(self.state)
 
     def update(self, result, reward):
-        if result == 0:
-            self.n += 1
-        elif result == 1:
-            self.m += 1
-        else:
-            assert(False)
-
-        self.reward += reward
+        self.state.update(result, reward)
 
 
 class Environment():
