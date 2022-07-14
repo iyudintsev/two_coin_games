@@ -1,6 +1,6 @@
 import math
 import numpy as np
-from scipy.stats import bernoulli
+from scipy.stats import bernoulli, beta
 from abc import abstractmethod
 
 
@@ -51,11 +51,18 @@ class GreadyStrategy(Strategy):
         return np.argmax([self.compute_ucb1(state, 0), self.compute_ucb1(state, 1)])
 
 
+class ThompsonStrategy(Strategy):
+    def __call__(self, state: State):
+        return beta.rvs(state.nums[0] + 1, state.nums[1] + 1) < .5
+
+
 def strategy_factory(strategy):
     if strategy.startswith('bernoulli'):
         p = float(strategy.split("_")[1])
         return BernoulliStrategy(p)
     if strategy == 'gready':
         return GreadyStrategy()
+    if strategy == 'thompson':
+        return ThompsonStrategy()
     else:
         assert(False)
